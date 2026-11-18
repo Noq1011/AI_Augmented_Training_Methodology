@@ -1,0 +1,37 @@
+# Enterprise IAM Lab Runbook & Diagnostic Log
+
+- **Engineer:** Tyson Miller
+- **Date:** 2026-11-18
+- **Training Methodology:** AI-Assisted Enterprise Sandbox + Confidence-Rated PBQ Simulation (CompTIA Security+ SY0-701 Domain 3.2)
+
+## Active Lab Ticket: `INC-49600` — Onboard Tier 2 Help Desk Tech: Gavin Brooks
+- **Target Platform:** Active Directory
+- **Requester:** IT Service Desk Manager
+- **Scenario Objective:** Create a new Active Directory user account for Gavin Brooks (sAMAccountName: gbrooks). Place them in the HelpDesk OU, grant Tier 2 support and VPN access (following Least Privilege—do NOT assign Domain Admins), and enforce a first-logon password reset.
+
+### Technical Acceptance Criteria
+- [x] Create AD user "gbrooks" (Gavin Brooks)
+- [x] Place in OU: OU=HelpDesk,OU=IT,DC=corp,DC=enterprise,DC=local
+- [x] Add Security Groups: HelpDesk_Tier2 and VPN_Users (NO Domain Admins)
+- [x] Enable flag: "User must change password at next logon"
+- [x] Ensure "Password never expires" and "Account is disabled" are UNCHECKED
+
+### Automated PBQ Verification Results (PASSED)
+- **Pre-Submit Confidence Rating:** High
+- ✅ **PASS**: AD object "gbrooks" created (`Display Name: Gavin Brooks`)
+- ✅ **PASS**: Placed in HelpDesk OU (`Current OU: OU=HelpDesk,OU=IT,DC=corp,DC=enterprise,DC=local`)
+- ✅ **PASS**: Member of HelpDesk_Tier2 & VPN_Users (without Domain Admins) (`Groups: HelpDesk_Tier2, VPN_Users`)
+- ✅ **PASS**: "User must change password at next logon" checked (`mustChangePwd: true`)
+- ✅ **PASS**: "Password never expires" & "Account is disabled" unchecked (`pwdNeverExpires: false, disabled: false`)
+
+### Security+ Concept Takeaway
+> **Q:** Why is assigning "Domain Admins" to a Tier 2 Help Desk technician a violation of enterprise IAM best practices?
+>
+> **Key Principle:** Under the Principle of Least Privilege (and Microsoft's Tiered Administration model), routine Help Desk tasks must use delegated Tier 2 groups rather than Tier 0 Domain Admins, preventing credential theft via Pass-the-Hash on user workstations.
+
+### Immutable Directory Audit Trail
+| Timestamp | Platform | Target Object | Administrative Action |
+| :--- | :--- | :--- | :--- |
+| `09:59:14` | Active Directory | `INC-49600` | Ticket validation PASSED (Confidence: High) |
+| `09:59:01` | Active Directory | `CORP\gbrooks` | Created AD object | OU: OU=HelpDesk,OU=IT,DC=corp,DC=enterprise,DC=local | Groups: [HelpDesk_Tier2, VPN_Users] |
+| `09:45:30` | System | `Multi-Tenant IAM Sandbox` | Initialized corp.enterprise.local directories (Google Workspace, ADUC, M365) |
